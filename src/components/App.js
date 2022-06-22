@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { connect } from 'react-redux';
-import { getUsersRequest } from '../actions/users'
+import { getUsersRequest, createUserRequest } from '../actions/users';
+import './App.css';
+import Form from './Form.jsx';
+import UsersList from './UsersList.jsx';
 
 // function* testing() {
 //   while(true){
@@ -9,24 +13,60 @@ import { getUsersRequest } from '../actions/users'
 //   }
 // }
 
-
 function App(props) {
   // const iterator = testing();
   // console.log(iterator.next())
   // console.log(iterator.next())
   // console.log(iterator.next())
   // console.log(iterator.next())
+  const {
+    getUsersRequest,
+    createUserRequest,
+    users
+  } = props;
 
-  props.getUsersRequest();
+  const [ firstName, setFirstName ] = useState('');
+  const [ lastName, setLastName ] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    createUserRequest({ firstName, lastName })
+
+    setFirstName('');
+    setLastName('');
+  }
+
+  const handleFirstName = (e) => {
+    setFirstName(e.target.value)
+  }
+
+  const handleLastName = (e) => {
+    setLastName(e.target.value)
+  }
+
+  getUsersRequest();
 
   return (
-    <div className="App">
-      <h1>oh hey cutie</h1>
+    <div className='app'>
+      <header>
+        <h1>oh hey cuties</h1>
+      </header>
+      <Form 
+        handleSubmit={handleSubmit}
+        handleFirstName={handleFirstName}
+        handleLastName={handleLastName}
+        firstName={firstName}
+        lastName={lastName}
+      />
+      <UsersList users={users} />
     </div>
   );
 }
 
-export default connect(null, {
+// ({users}) => ({users}) maps state to props
+export default connect(({users}) => ({users}), {
   // map dispatch to props
-  getUsersRequest
+  getUsersRequest,
+  createUserRequest
 })(App);
